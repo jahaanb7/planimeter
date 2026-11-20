@@ -7,6 +7,10 @@ A 3D-printable polar planimeter. Trace the outline of any shape with the tip, an
   <img src="docs/images/sketch/stills/real.png" width="45%" alt="Render of the assembled planimeter">
 </p>
 
+<p align="center">
+  <img src="docs/images/views/exploded.png" width="90%" alt="Exploded view of every printed part and fastener">
+</p>
+
 With the pole outside the outline, the area is
 
 ```
@@ -19,6 +23,16 @@ Everything is verified in CAD and simulation. **Nothing has been printed and tes
 
 **Contents:** [`docs/planimeter.pdf`](docs/planimeter.pdf) is the full article, with the derivation, the mechanism design, the error budget and the build guide.
 
+## Views
+
+| | |
+|---|---|
+| <img src="docs/images/views/iso_front.png" alt="Front isometric"> | <img src="docs/images/views/iso_rear.png" alt="Rear isometric"> |
+| <img src="docs/images/views/top.png" alt="Top view"> | <img src="docs/images/views/side.png" alt="Side view"> |
+| <img src="docs/images/views/carriage_closeup.png" alt="Carriage close-up"> | <img src="docs/images/views/iso_wheel_side.png" alt="View from the wheel side"> |
+
+Exploded view colours: wheel blue, counter dial orange, tracer arm green, pole arm red, pole weight grey, printed carriage beige, hardware steel.
+
 ## Repository
 
 | Path | Contents |
@@ -28,7 +42,7 @@ Everything is verified in CAD and simulation. **Nothing has been printed and tes
 | `step/` | STEP files for Fusion 360 or any CAD: one per part plus `planimeter_assembly.step` |
 | `sim/` | Kinematic simulation, error budget and hand calculations |
 | `docs/` | Article (LaTeX source and PDF), figures, sketch video |
-| `tools/` | Preview renderer and printability report |
+| `tools/` | Preview and view renderers, printability report |
 
 ## Bill of materials
 
@@ -44,6 +58,8 @@ Everything is verified in CAD and simulation. **Nothing has been printed and tes
 | Sewing pin (check rule) | 1 |
 
 ## Printing
+
+<p align="center"><img src="docs/images/parts_sheet.png" width="80%" alt="Printed parts in print orientation"></p>
 
 PLA, 0.2 mm layers, 3 walls, 20% infill. Print `tolerance_coupon.stl` first and adjust `bearing_fit`, `arm_clearance` and `nut_clear` in `cad/params.py` if the bearings, arm or nuts do not fit. The STLs are already in print orientation.
 
