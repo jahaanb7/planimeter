@@ -197,7 +197,7 @@ def annotate(img, labels, meshes, centre, cam_pose, size, ortho, radius, pad):
     font = None
     for f in ("/System/Library/Fonts/Helvetica.ttc", "/System/Library/Fonts/Supplemental/Arial.ttf"):
         try:
-            font = ImageFont.truetype(f, 30)
+            font = ImageFont.truetype(f, 46)
             break
         except OSError:
             pass
@@ -206,7 +206,9 @@ def annotate(img, labels, meshes, centre, cam_pose, size, ortho, radius, pad):
     for i, (text, idx) in enumerate(labels):
         c = meshes[idx[0]].bounds.mean(0) - centre
         anchors.append((text, project(c, cam_pose, size, ortho, radius, pad)))
-    margin = 560
+    from PIL import ImageChops
+    bb = ImageChops.difference(img, Image.new("RGB", img.size, (255, 255, 255))).getbbox()
+    margin = 700
     canvas = Image.new("RGB", (img.width + 2 * margin, img.height), (255, 255, 255))
     canvas.paste(img, (margin, 0))
     d = ImageDraw.Draw(canvas)
@@ -219,8 +221,8 @@ def annotate(img, labels, meshes, centre, cam_pose, size, ortho, radius, pad):
         ys = []
         for k, (text, (ax, ay)) in enumerate(items):
             y = ay
-            if ys and y < ys[-1] + 42:
-                y = ys[-1] + 42
+            if ys and y < ys[-1] + 62:
+                y = ys[-1] + 62
             ys.append(y)
         # keep the stack inside the image
         shift = max(0, ys[-1] - (img.height - 20)) if ys else 0
@@ -229,12 +231,12 @@ def annotate(img, labels, meshes, centre, cam_pose, size, ortho, radius, pad):
             ax += margin
             tw = d.textlength(text, font=font)
             if side == "L":
-                tx = margin - 30
-                d.text((tx - tw, y - 16), text, fill=ink, font=font)
+                tx = margin + bb[0] - 40
+                d.text((tx - tw, y - 24), text, fill=ink, font=font)
                 d.line([(tx + 6, y), (tx + 26, y), (ax, ay)], fill=(120, 126, 140), width=2)
             else:
-                tx = margin + img.width + 30
-                d.text((tx, y - 16), text, fill=ink, font=font)
+                tx = margin + bb[2] + 40
+                d.text((tx, y - 24), text, fill=ink, font=font)
                 d.line([(tx - 6, y), (tx - 26, y), (ax, ay)], fill=(120, 126, 140), width=2)
             d.ellipse([ax - 5, ay - 5, ax + 5, ay + 5], fill=(192, 57, 75))
     return canvas

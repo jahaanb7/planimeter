@@ -149,7 +149,7 @@ def fig_geneva():
     ax.set_xlabel(r"wheel angle $\theta$ (degrees); shaded = pin engaged")
     ax.set_ylabel("dial angle (degrees)")
     ax.set_yticks([-18, 0, 18])
-    ax.annotate("one wheel revolution = one 36° dial step", (-170, -12), fontsize=8)
+    ax.annotate("one wheel revolution = one 36° dial step", (-170, 12), fontsize=8)
     ax.grid(alpha=0.25)
     save(fig, "fig_geneva")
 
