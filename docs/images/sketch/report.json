@@ -1,0 +1,119 @@
+{
+  "object": "planimeter_assembly.glb",
+  "size": "1600x1000",
+  "settings": {
+    "hold": 1,
+    "az": 215,
+    "el": 30,
+    "fit": 0.85,
+    "look3": [
+      0,
+      -0.05,
+      0
+    ]
+  },
+  "model": {
+    "meshes": 2000,
+    "materials": 8,
+    "triangles": 117158,
+    "size": [
+      177,
+      50.8,
+      252
+    ],
+    "names": [
+      "wheel_1:mat_0",
+      "wheel_2:mat_0",
+      "wheel_3:mat_0",
+      "wheel_4:mat_0",
+      "wheel_5:mat_0",
+      "wheel_6:mat_0",
+      "wheel_7:mat_0",
+      "wheel_8:mat_0",
+      "wheel_9:mat_0",
+      "wheel_10:mat_0",
+      "wheel_11:mat_0",
+      "wheel_12:mat_0",
+      "wheel_13:mat_0",
+      "wheel_14:mat_0",
+      "wheel_15:mat_0",
+      "wheel_16:mat_0",
+      "wheel_17:mat_0",
+      "wheel_18:mat_0",
+      "wheel_19:mat_0",
+      "wheel_20:mat_0",
+      "wheel_21:mat_0",
+      "wheel_22:mat_0",
+      "wheel_23:mat_0",
+      "wheel_24:mat_0",
+      "wheel_25:mat_0",
+      "wheel_26:mat_0",
+      "wheel_27:mat_0",
+      "wheel_28:mat_0",
+      "wheel_29:mat_0",
+      "wheel_30:mat_0",
+      "wheel_31:mat_0",
+      "wheel_32:mat_0",
+      "wheel_33:mat_0",
+      "wheel_34:mat_0",
+      "wheel_35:mat_0",
+      "wheel_36:mat_0",
+      "wheel_37:mat_0",
+      "wheel_38:mat_0",
+      "wheel_39:mat_0",
+      "wheel_40:mat_0",
+      "wheel_41:mat_0",
+      "wheel_42:mat_0",
+      "wheel_43:mat_0",
+      "wheel_44:mat_0",
+      "wheel_45:mat_0",
+      "wheel_46:mat_0",
+      "wheel_47:mat_0",
+      "wheel_48:mat_0",
+      "wheel_49:mat_0",
+      "wheel_50:mat_0",
+      "wheel_51:mat_0",
+      "wheel_52:mat_0",
+      "wheel_53:mat_0",
+      "wheel_54:mat_0",
+      "wheel_55:mat_0",
+      "wheel_56:mat_0",
+      "wheel_57:mat_0",
+      "wheel_58:mat_0",
+      "wheel_59:mat_0",
+      "wheel_60:mat_0"
+    ],
+    "warn": []
+  },
+  "sketch": {
+    "meshes": 2000,
+    "segments": 100670,
+    "crease": 36,
+    "circles": 6,
+    "rings": 2,
+    "majors": 16,
+    "guides": 20
+  },
+  "checks": [
+    {
+      "check": "object fills the frame",
+      "pass": true,
+      "detail": "its longest side is 73% of the frame's short side (needs 50% or more; closer with a lower --fit)"
+    },
+    {
+      "check": "object inside the frame",
+      "pass": true,
+      "detail": "box 396,316,1156,876 in 1600x1000"
+    },
+    {
+      "check": "circle guides found",
+      "pass": true,
+      "detail": "6 circles"
+    },
+    {
+      "check": "lines only build (no ink drops before the fill)",
+      "pass": true,
+      "detail": "largest drop 2% at 0.2 s (measured with the camera held still)"
+    }
+  ]
+}

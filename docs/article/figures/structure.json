@@ -1,0 +1,15 @@
+{
+ "tracer arm vertical sag, 3.5 GPa": 0.2051,
+ "tracer arm sideways deflection, 3.5 GPa": 0.0912,
+ "tracer arm vertical sag, 2.0 GPa": 0.359,
+ "tracer arm sideways deflection, 2.0 GPa": 0.1595,
+ "tracer arm bending stress (MPa)": 1.2812,
+ "tracer arm stress margin": 39.0244,
+ "tracer arm stress at the slot (MPa)": 2.2321,
+ "slot stress margin": 22.4,
+ "pole arm vertical deflection mid-span, 3.5 GPa (mm)": 0.1042,
+ "pole arm bending stress (MPa)": 0.5128,
+ "pole arm Euler buckling load in plane (N)": 847.0111,
+ "axle deflection at 0.7 N (mm)": 0.0009,
+ "pocket hoop stress at 0.05 mm interference (MPa)": 36.9397
+}

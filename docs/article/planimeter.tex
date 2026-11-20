@@ -1,0 +1,514 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=24mm]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{graphicx}
+\usepackage{booktabs,tabularx}
+\usepackage{xcolor}
+\usepackage{caption,subcaption}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true,linkcolor=ink,urlcolor=accent,citecolor=ink]{hyperref}
+
+\graphicspath{{figures/}{../images/}{../images/parts/}{../images/sketch/stills/}}
+
+\definecolor{ink}{HTML}{1B2A41}
+\definecolor{accent}{HTML}{C0394B}
+\definecolor{blue2}{HTML}{2E86AB}
+\definecolor{calloutbg}{HTML}{F4F6F8}
+\definecolor{calloutline}{HTML}{9AA5B1}
+
+\newsavebox{\calloutbox}
+\newenvironment{callout}[1]{%
+  \begin{center}\begin{lrbox}{\calloutbox}\begin{minipage}{0.9\linewidth}\small
+  \textsf{\textcolor{accent}{#1}}\par\smallskip}%
+  {\end{minipage}\end{lrbox}\fcolorbox{calloutline}{calloutbg}{\usebox{\calloutbox}}\end{center}}
+
+\newcommand{\vect}[1]{\bm{#1}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\cross}{\times}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\small\thepage}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.7em}
+\captionsetup{font=small,labelfont=bf,format=hang}
+
+\title{\textsf{A 3D-printed polar planimeter}\\[2pt]
+  \large How it measures area, the maths behind it, and how the maths becomes plastic}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-2.5em}
+
+\begin{abstract}\noindent
+A planimeter measures the area of any outline you can trace with a pointer. This article explains how the
+classic polar planimeter does it, derives the area formula from first principles, and then shows how each term of that
+formula became a dimension, a fit or a feature on a printable model. The design is a 100\,mm tracer arm,
+a 100\,mm wheel circumference, a ten-to-one Geneva revolution counter, and eleven printed parts. Everything reported
+here comes from the CAD model and from simulation. The instrument has not yet been printed and run on paper, and the
+text says where that matters.
+\end{abstract}
+
+\section{What a planimeter does}
+
+You trace the outline of a shape with a pointer. A small wheel rolls along the way, and when you get back to the start
+you read a number off the wheel. That number is the area inside the outline. It works for a lake on a map, the cross
+section of a ship's hull, or a leaf, and the shape can be as wobbly as you like.
+
+The wheel ignores the distance around the shape and counts only how far the instrument slid sideways. The geometry of the
+instrument then turns that sideways slide into area.
+
+\begin{callout}{An analogy: the paint roller}
+Push a paint roller across a wall. The roller turns only when you move it at right angles to its axle. Slide it along the axle
+and it skids without turning. Now suppose the roller is attached to a rigid arm of length $L$ pivoting at a post.
+When the arm sweeps through a small angle, the roller covers a thin wedge of wall. The turns of the roller count the
+\emph{sideways} travel, and sideways travel times arm length is exactly the area swept.
+\end{callout}
+
+\section{The idea in plain language}
+
+Imagine the arm as a windscreen wiper of length $L$ that carries a counting wheel. When the tip moves sideways by a distance
+$d$ the wiper sweeps a thin wedge whose area is proportional to $L\cdot d$. When the tip moves along the arm, it sweeps nothing, and the wheel does
+not turn. So the wheel reads $d$, and the area follows from $L$ and the readings.
+
+Now trace a closed loop. On one side of the shape the arm sweeps area on its way out. On the other side it comes back and sweeps the
+same ground in reverse, so that part is subtracted. The ground between the outward and return strokes is the only
+part that is not cancelled. That is the area inside the loop. It is the same bookkeeping as a bank statement: every
+deposit and withdrawal on a shared stretch cancels, and the balance is what the two paths did not share.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.78\linewidth]{fig_sweep.pdf}
+  \caption{Left: going out and back along one line gives a wheel reading of zero. Right: around a closed loop only the
+  enclosed area survives, and the reading is the area divided by the arm length.}
+\end{figure}
+
+In a real planimeter the arm has a second arm attached to it, the pole arm, which ends at a fixed weight. The pole arm
+forces the elbow to move on a circle, so the tracer arm rotates as you move around. The wheel then reads sideways motion plus
+a small contribution from that rotation. The next section shows that the contribution cancels for any loop that
+does not enclose the pole, and that it leaves a fixed constant when the loop does enclose it.
+
+\section{The mathematics}
+
+\subsection{Setting up}
+
+Put the pole at the origin $O$. The pole arm has length $R$ and ends at the elbow $E$, so $|\vect{E}|=R$. The tracer arm
+points along the unit vector $\vect{u}=(\cos\theta,\sin\theta)$, and $\vect{n}=(-\sin\theta,\cos\theta)$ is $\vect{u}$ turned
+$90^\circ$ to the left. Three points matter:
+\begin{align}
+  \vect{T} &= \vect{E} + L\,\vect{u} && \text{(tracer point)},\\
+  \vect{W} &= \vect{E} + a\,\vect{u} + b\,\vect{n} && \text{(where the wheel touches the paper)}.
+\end{align}
+The wheel axle is parallel to $\vect{u}$. A wheel rolls only for motion perpendicular to its axle, so the distance it
+rolls is the component of its motion along $\vect{n}$:
+\begin{equation}
+  \dd s = \vect{n}\cdot \dd\vect{W}.
+\end{equation}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.62\linewidth]{fig_geometry.pdf}
+  \caption{The linkage. The wheel sits at distance $a$ along the tracer arm and $b$ to the side of it.
+  The pole arm has length $R$ and the tracer arm has length $L$.}
+\end{figure}
+
+\subsection{What the wheel reads}
+
+Differentiate $\vect{W}$. The unit vectors turn as the arm turns, with $\dd\vect{u}=\vect{n}\,\dd\theta$ and
+$\dd\vect{n}=-\vect{u}\,\dd\theta$. Then
+\begin{equation}
+  \dd\vect{W} = \dd\vect{E} + a\,\vect{n}\,\dd\theta - b\,\vect{u}\,\dd\theta.
+\end{equation}
+Take the dot product with $\vect{n}$. Since $\vect{n}\cdot\vect{n}=1$ and $\vect{n}\cdot\vect{u}=0$,
+\begin{equation}
+  \dd s = \vect{n}\cdot\dd\vect{E} + a\,\dd\theta.
+  \label{eq:ds}
+\end{equation}
+The sideways offset $b$ has disappeared. That is why the wheel can sit anywhere across the arm and the reading does not change. Only its position
+$a$ along the arm matters, and only for loops that enclose the pole.
+
+\subsection{The area of the loop}
+
+For a closed path, Green's theorem gives the enclosed area as
+\begin{equation}
+  A = \tfrac12\oint \vect{T}\times\dd\vect{T},
+  \qquad \vect{p}\times\vect{q}=p_xq_y-p_yq_x.
+\end{equation}
+Substitute $\vect{T}=\vect{E}+L\vect{u}$ and $\dd\vect{T}=\dd\vect{E}+L\vect{n}\,\dd\theta$:
+\begin{equation}
+  \vect{T}\times\dd\vect{T}
+  = \vect{E}\times\dd\vect{E}
+  + L\,\vect{E}\times\vect{n}\,\dd\theta
+  + L\,\vect{u}\times\dd\vect{E}
+  + L^2\,\vect{u}\times\vect{n}\,\dd\theta .
+\end{equation}
+Three facts simplify this. First, $\vect{u}\times\vect{n}=1$. Second, $\vect{u}\times\dd\vect{E}=\vect{n}\cdot\dd\vect{E}$.
+Third, $\vect{E}\times\vect{n}\,\dd\theta = \dd(\vect{E}\times\vect{u}) + \vect{u}\times\dd\vect{E}$, and the exact
+differential $\dd(\vect{E}\times\vect{u})$ integrates to zero around a closed loop. Collecting terms,
+\begin{equation}
+  2A = \oint \vect{E}\times\dd\vect{E}
+  + 2L\oint \vect{n}\cdot\dd\vect{E}
+  + L^2\oint\dd\theta .
+\end{equation}
+Now use \eqref{eq:ds} to replace $\oint\vect{n}\cdot\dd\vect{E}$ by $s-a\oint\dd\theta$, where $s=\oint\dd s$ is the
+total wheel travel. The result is the planimeter equation:
+\begin{equation}
+  \boxed{\;2A = \oint \vect{E}\times\dd\vect{E} \;+\; 2L\,s \;+\; (L^2-2aL)\oint\dd\theta\;}
+  \label{eq:main}
+\end{equation}
+
+\subsection{Pole outside the loop}
+
+If the pole is outside the outline, the elbow rocks to and fro along one arc of its circle and returns to where it started.
+Since $\vect{E}\times\dd\vect{E}=R^2\,\dd\varphi$ for motion on a circle of radius $R$, its integral over a
+there-and-back trip is zero. The arm also returns to its starting angle, so $\oint\dd\theta=0$. Equation
+\eqref{eq:main} collapses to
+\begin{equation}
+  \boxed{\,A = L\,s\,}
+\end{equation}
+The area is the arm length times the distance the wheel rolled. Nothing else enters. In particular, the pole arm length $R$, the
+wheel offset $b$, and the shape of the loop all drop out.
+
+\subsection{Pole inside the loop}
+
+If the loop encloses the pole, the elbow travels once around its circle, so $\oint\vect{E}\times\dd\vect{E}=2\pi R^2$,
+and the arm turns through one full revolution, so $\oint\dd\theta=2\pi$. Then
+\begin{equation}
+  A = L\,s + \pi\,(R^2+L^2-2aL).
+\end{equation}
+The constant is the area of the \emph{zero circle}: the loop for which the wheel reads exactly zero. With $R=160$\,mm, $L=100$\,mm
+and the wheel at $a=-22$\,mm, the bracket is $25\,600+10\,000+4\,400=40\,000$\,mm$^2$, so the zero circle has area
+$\pi\cdot 40\,000\approx 1257$\,cm$^2$, which is a circle of radius exactly 200\,mm. That is larger than most things you
+would trace, so in practice you keep the pole outside the outline.
+
+\begin{callout}{Why the pivot has to sit on the arm's centreline}
+Suppose the elbow pivot were offset sideways from the arm's axis by a small distance $d$. Repeating the derivation adds a
+term $-2d\oint\dd\vect{E}\cdot\vect{u}$ to \eqref{eq:main}. The wheel does not measure this term, so the reading would
+be wrong by an amount that depends on the shape. The CAD therefore puts the elbow bolt through a slot in the tracer arm, and
+the clamp presses the arm against a datum wall so its centreline lines up with the bolt.
+\end{callout}
+
+\subsection{Checking the algebra by simulation}
+
+The derivation is easy to get wrong by a sign, so I checked it numerically. The simulation script moves the
+tracer around a polyline, finds the elbow by intersecting two circles at every step, moves the wheel contact point
+and sums $\vect{n}\cdot\dd\vect{W}$. Comparing $L\,s$ with the exact area from the shoelace formula:
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{llrrr}
+\toprule
+Pole & Shape & True (cm$^2$) & Model (cm$^2$) & Error (\%) \\
+\midrule
+outside & circle, $r=40$ & 50.265 & 50.265 & $<10^{-4}$ \\
+outside & square $80\times80$ & 64.000 & 64.000 & $<10^{-4}$ \\
+outside & triangle & 38.000 & 38.000 & 0.0001 \\
+outside & irregular polygon & 87.250 & 87.250 & $<10^{-4}$ \\
+outside & ten-point star & 26.450 & 26.450 & $<10^{-4}$ \\
+outside & ellipse $90\times40$ & 28.274 & 28.274 & $<10^{-4}$ \\
+inside  & circle $r=150$ about the pole & 706.849 & 706.851 & 0.0002 \\
+inside  & ellipse $180\times120$ about the pole & 678.575 & 678.577 & 0.0002 \\
+\bottomrule
+\end{tabular}
+\caption{The area formula against the exact area. The small residue is the finite step size of the polyline, and the formula holds in both modes, including the zero-circle constant.}
+\end{table}
+
+\section{From maths to mechanism}
+
+Every term in the equation has a physical counterpart (Table~\ref{tab:map}). The less obvious ones are explained below the table.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lXl@{}}
+\toprule
+Term & What it became & Value \\
+\midrule
+$L$ & Distance from the elbow bolt to the tracer bolt, set by sliding the tracer arm in its channel & 100\,mm (90 to 110) \\
+$C$ & Rolling circumference of the wheel, measured over the knurl ridges & 100\,mm ($\varnothing31.83$) \\
+$L\cdot C$ & Area for one turn of the wheel & 100\,cm$^2$ \\
+$s$ & Wheel travel, read on a 50-division drum and a 10-division vernier & 0.2\,cm$^2$ steps \\
+Revolutions & Ten-slot Geneva counter, one step per turn & 0 to 9 turns \\
+$R$ & Pole arm, bearing to bearing & 160\,mm \\
+$b$ & Wheel offset to the side of the arm (drops out) & 26\,mm \\
+$a$ & Wheel position along the arm (sets the zero circle) & $-22$\,mm \\
+$d=0$ & Slot in the arm, datum wall in the carriage & slot 3.6\,mm \\
+Wheel $\parallel$ arm & Both bores printed vertically, axle is a steel bolt & $<0.2^\circ$ target \\
+\bottomrule
+\end{tabularx}
+\caption{Equation term to hardware.}
+\label{tab:map}
+\end{table}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.58\linewidth]{fig_plan.pdf}
+  \caption{Plan view of the actual CAD model with the geometry overlaid. The wheel and counter sit on the left side of
+  the tracer arm, and the pole arm goes out to the other side, so the two never collide.}
+\end{figure}
+
+\subsection{Choosing the numbers}
+
+The arm length and wheel size were chosen so that the arithmetic is easy. A wheel circumference of 100\,mm and an arm of
+100\,mm mean one turn of the wheel is $100\times100=10\,000$\,mm$^2=100$\,cm$^2$. One millimetre of wheel travel is
+exactly one square centimetre. The wheel diameter is $100/\pi=31.831$\,mm. The 100\,mm arm also reaches a useful range:
+the pole arm lets the tracer travel anywhere between $|R-L|=60$\,mm and $R+L=260$\,mm from the pole.
+
+\subsection{Reading the wheel}
+
+The drum around the wheel has 50 divisions, so each is $100/50=2$\,cm$^2$. A fixed vernier plate carries 11 lines, spaced so that ten
+vernier divisions span nine drum divisions. Each vernier division is then $0.9\times2=1.8$\,cm$^2$, and the line that
+lines up with a drum mark tells you the tenths of a division, which are $2/10=0.2$\,cm$^2$.
+
+The drum also has numerals every ten units, so the reading is a number between 0 and 100. To count full turns, a small dial
+shows 0 to 9.
+
+\subsection{The counter: a ten-to-one Geneva drive}
+
+A pin on the wheel engages a slot in a ten-slot wheel (the dial) once per revolution and turns it by $360^\circ/10=36^\circ$.
+For a pin at radius $a_p$ on the wheel and slots $n=10$, the geometry fixes the centre distance and the engagement window:
+\begin{equation}
+  C = \frac{a_p}{\sin(\pi/n)},\qquad
+  |\theta| \le 90^\circ-\frac{180^\circ}{n}\quad\text{(pin engaged)},
+\end{equation}
+\begin{equation}
+  \tan\varphi = \frac{a_p\sin\theta}{C-a_p\cos\theta}.
+\end{equation}
+With $a_p=6$\,mm the centre distance is $C=19.416$\,mm, the pin is engaged for $\pm72^\circ$ of wheel rotation, and $\varphi$ is
+the dial angle. Outside that window a lock disc on the wheel holds the dial still.
+
+The phase is chosen so the pin finishes its push exactly when the drum passes zero. So the dial reads the lower digit
+until the drum has wrapped from 99 to 0, which gives a simple reading rule: if the dial sits between two digits, take the smaller one.
+
+I preferred a Geneva drive to a worm gear for two reasons. A worm wheel with ten teeth is undercut at the usual pressure angle, and a
+worm drags on the wheel all the time. The Geneva drive loads the wheel only briefly once per turn.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.72\linewidth]{fig_geneva.pdf}
+  \caption{Dial angle against wheel angle over one revolution. The dial moves by $36^\circ$ while the pin is engaged, which is while the drum reads 60 up to 100.}
+\end{figure}
+
+\section{The printed design}
+
+\subsection{Parts}
+
+The planimeter has eleven printed parts. Figure~\ref{fig:sketch} shows the assembled model, first as the marker sketch the
+\texttt{sketch-to-3d} tool draws and then as the render.
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}{0.49\linewidth}\includegraphics[width=\linewidth]{sketch.png}\end{subfigure}\hfill
+  \begin{subfigure}{0.49\linewidth}\includegraphics[width=\linewidth]{real.png}\end{subfigure}
+  \caption{The assembled planimeter in the working pose: sketch stage (left) and render (right). The tracer arm is green,
+  the pole arm red, the wheel blue and the Geneva dial orange.}
+  \label{fig:sketch}
+\end{figure}
+
+\begin{table}[ht]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}llX@{}}
+\toprule
+Part & Print orientation & Job \\
+\midrule
+Wheel & drum end down & Knurled rim, graduated drum, two bearing pockets, lock disc and crank plate \\
+Carriage block A & standing on end & Channel for the tracer arm, elbow post, clamp screw \\
+Front plate B & flat & Front wheel plate, vernier arc, ballast box \\
+Rear plate C & flat & Rear wheel plate, two posts, dial axle \\
+Counter dial & flat & Ten-slot Geneva wheel with digits 0 to 9 \\
+Tracer arm & flat & $12\times8$ bar with pivot slot, scale and knob \\
+Pole arm & underside up & Bar with a bearing at each end \\
+Pole weight and lid & upright & Holds the pole still; cavity for ballast \\
+Check rule & flat & Calibration circle of exactly 100\,cm$^2$ \\
+Tolerance coupon & flat & Test print for fits \\
+\bottomrule
+\end{tabularx}
+\caption{The printed parts.}
+\end{table}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{parts_sheet.png}
+  \caption{Eight of the printed parts in print orientation (isometric view): wheel, block A, plates B and C, counter dial, tracer arm, pole arm and pole weight. A 40$^\circ$ skirt under the wheel rim lets the large rim print without supports.}
+\end{figure}
+
+\subsection{Why the carriage is three parts}
+
+A first version had the carriage as one part. Whichever way I turned it, the upper cheek of the wheel fork hung over the
+wheel slot as a wide unsupported overhang. Splitting it into a block (A), a front plate (B) and a rear plate (C) fixes
+that, because each piece now has a flat face to lie on, with its features pointing up.
+
+It also helps accuracy. Block A prints standing on its end, so the tracer-arm channel is a vertical rectangular bore. The wheel
+axle is a steel M3 bolt that runs through both plates, and each plate's bore is printed vertically on its own flat face. The
+printer's Z axis is what keeps the channel and the axle parallel, and the steel bolt, not the plastic, defines the wheel axis.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.9\linewidth]{wheel_views.png}
+  \caption{The wheel from three sides. The numerals and divisions are engraved into the drum, and the pin and crank plate of the counter stand on top.}
+\end{figure}
+
+\subsection{Fits and tolerances}
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Interface & Nominal & Fit \\
+\midrule
+623ZZ in wheel hub & $\varnothing10$ & pocket 10.10, tune with the coupon \\
+M3 axle in the bearing bore & $\varnothing3$ & slip; plate bores 3.40 \\
+Wheel face to plate & 0.6\,mm & gap; only the inner race is touched \\
+Tracer arm in channel & $12\times8$ & $+0.25$\,mm per side, clamped to the datum \\
+M3 nut traps & 5.8\,AF & $+0.2$\,mm \\
+Geneva pin in slot & $\varnothing2.4$ & slot 2.9 \\
+\bottomrule
+\end{tabular}
+\caption{Default fits. Print the coupon first and adjust \texttt{bearing\_fit}, \texttt{arm\_clearance} and
+\texttt{nut\_clear} in \texttt{cad/params.py}.}
+\end{table}
+
+The bearings are held in the hub by a standoff ring on each plate that touches only the inner race, so the wheel spins on the bearings and
+nothing rubs on the shield or the printed faces.
+
+\section{Does it hold up?}
+
+\subsection{Checks on the model}
+
+The assembly script places all 42 components (the nine printed parts of the instrument, plus bearings, bolts, nuts and rubber feet) in the
+working pose and runs these checks.
+
+\begin{itemize}
+  \item No two components overlap. The first run found three problems (a standoff ring that was not bored through, a
+  clamped arm sitting 0.25\,mm off the pivot axis, and the wheel and dial in different phases). All three are fixed and the matrix now reports zero clashes.
+  \item The wheel rim and the tracer tip are at the paper level, and everything else is clear of the paper, with the drum 2.4\,mm above it.
+  \item The pole arm swings through every elbow angle from $8^\circ$ to $179^\circ$ without touching the carriage, the wheel, the dial or the tracer arm.
+  \item With the real solids, the wheel turns through one full revolution and the dial rotates by exactly $36^\circ$ with zero interference at every sampled angle.
+\end{itemize}
+
+\subsection{Rigidity and strength}
+
+Loads are deliberately harsh: 2\,N (about 200\,g-force) on the tracer knob and 1\,N at the middle of the pole arm.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Quantity & Result & Margin \\
+\midrule
+Tracer arm sag, vertical, $E=3.5$\,GPa & 0.21\,mm & \\
+Tracer arm sag, vertical, $E=2.0$\,GPa & 0.36\,mm & \\
+Tracer arm sideways deflection & 0.09\,mm & \\
+Bending stress at the clamp & 1.3\,MPa & $39\times$ \\
+Bending stress at the pivot slot & 2.2\,MPa & $22\times$ \\
+Pole arm deflection, mid-span & 0.10\,mm & \\
+Pole arm buckling load & 847\,N & \\
+Axle deflection under the wheel load & $0.001$\,mm & \\
+Bearing pocket hoop stress at 0.05\,mm interference & 37\,MPa & $1.4\times$ \\
+\bottomrule
+\end{tabular}
+\caption{Hand calculations from \texttt{sim/structure.py}. Yield for printed PLA is taken as 50\,MPa.}
+\end{table}
+
+The arms are stiff enough: even at 200\,g-force the tracer moves 0.1\,mm sideways. The bearing pocket is the tightest item.
+A 0.05\,mm interference gives a margin of only $1.4$, and PLA creeps under steady stress, so aim for a light press and use the coupon to find it.
+
+\subsection{Weight on the wheel}
+
+The wheel only rolls cleanly if it presses on the paper. Taking printed parts at half solid weight, the
+model weighs 77\,g, and a static balance on the three supports (wheel, tracer tip, elbow) gives 54\,g on the wheel, 10\,g on the tip and
+14\,g through the elbow. Seven grams of steel shot in the ballast box lifts the wheel load to 70\,g. Those masses are estimates
+until the parts are weighed, which is why the ballast box is larger than it needs to be: it holds about 40\,g.
+
+Moving at constant speed, the tip friction is cancelled by your hand, so the wheel sees almost no sideways force. The 70\,g
+load is a comfortable margin against slip.
+
+\subsection{How accurate can it be?}
+
+Two sources of error can be simulated directly. If the wheel axle is not exactly parallel to the arm by an angle $\delta$, the wheel
+picks up a little motion along the arm. If the elbow bearing has play, the true pivot moves away from the arm
+centreline. Figure~\ref{fig:err} shows the worst-case area error over the six test shapes.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\linewidth]{fig_errors.pdf}
+  \caption{Worst-case area error against axle misalignment (left) and elbow play (right). The dashed line is 0.5\,\%.}
+  \label{fig:err}
+\end{figure}
+
+The error grows by about one percent per degree of misalignment, so a $0.2^\circ$ error costs $0.2\,\%$. Pivot play of
+0.15\,mm costs about $0.17\,\%$. Two other errors are pure scale factors: a wheel circumference that is 1\,\% off
+gives a 1\,\% error in every reading, and an arm length that is 0.2\,mm off gives 0.2\,\%. The check rule removes both, as described below.
+Together these suggest an accuracy of around half a percent for areas of 50 to 300\,cm$^2$ once the instrument is calibrated.
+That is a prediction from the model, to be confirmed on a printed unit.
+
+\begin{callout}{A limit worth knowing}
+Professional planimeters cancel axle misalignment by averaging a reading taken with the pole on the left and one taken with
+the pole on the right. This design cannot do that, because the pole arm would hit the wheel when swung to the wheel's side. The
+trade is that the wheel is out of the way for every reading the instrument can make.
+\end{callout}
+
+\section{Building and using it}
+
+\subsection{What you need}
+
+Besides the printed parts: four 623ZZ bearings; M3 bolts ($1\times35$ axle, $2\times35$ plate C, $4\times25$ block,
+$1\times30$ dial, $1\times30$ elbow, $1\times35$ pole, $1\times40$ tracer) and a $12$\,mm thumbscrew; 12 M3 nuts; two
+7\,mm washers; three self-adhesive rubber feet; steel shot or washers for ballast; a sewing pin; and a drop of
+threadlocker for the axle nut. Print the coupon first.
+
+\subsection{Calibrating}
+
+Pin the check rule through its small hole into a board and rest the tracer tip in the cone seat at the other end. Swing it once around the full circle
+with the pole outside. The circle has radius $\sqrt{10\,000/\pi}=56.419$\,mm, so its area is exactly $100$\,cm$^2$.
+Since the reading is proportional to $L$ (equation $A=Ls$ with fixed $s$), if the dial and drum read $R_\text{meas}$ the arm length should be
+\begin{equation}
+  L_\text{new} = L_\text{old}\cdot\frac{100}{R_\text{meas}}.
+\end{equation}
+Slide the arm by the difference, using the scale on the arm, and repeat until the circle reads 100. This also absorbs any
+error in the wheel diameter.
+
+\subsection{Measuring}
+
+Put the pole weight beside the shape, outside the outline, and rest the tracer tip on a point of the outline. Note the drum and
+dial. Trace the outline clockwise and read again. The area in square centimetres is the difference between the two readings.
+Read the dial by the rule above: if it sits between two digits, use the smaller digit.
+
+\section{What is not yet proven}
+
+The model, the checks and the simulation agree with each other, but several things only a printed unit can settle.
+Printed bores come out smaller than modelled, so the bearing and arm fits need the coupon. The wheel load is
+computed from estimated infill, and should be weighed. The paper grip of a PLA knurl is assumed, and an O-ring in the rim groove
+is the fix if it slips. Finally, the calibration rule corrects scale errors but not a skewed axle, so check that the wheel
+rolls straight along the arm before trusting small shapes.
+
+\appendix
+\section{Parameters}
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}llr@{}}
+\toprule
+Parameter & Meaning & Value \\
+\midrule
+\texttt{L} & Elbow to tracer axis & 100.0\,mm \\
+\texttt{WHEEL\_CIRC} & Rolling circumference & 100.0\,mm \\
+\texttt{R\_POLE} & Pole arm length & 160.0\,mm \\
+\texttt{WHEEL\_B}, \texttt{WHEEL\_A} & Wheel offset, wheel position & 26.0, $-22.0$\,mm \\
+\texttt{DRUM\_DIVS} & Drum divisions & 50 \\
+\texttt{VERNIER\_DIVS} & Vernier divisions & 10 \\
+\texttt{GEN\_N}, \texttt{GEN\_PIN\_A} & Geneva slots, pin radius & 10, 6.0\,mm \\
+\texttt{bearing\_fit} & Added to the 10\,mm pocket & 0.10\,mm \\
+\texttt{arm\_clearance} & Channel clearance per side & 0.25\,mm \\
+\bottomrule
+\end{tabular}
+\caption{The main parameters in \texttt{cad/params.py}. Every dimension in every part script comes from this file, so changing a value and running \texttt{cad/build.py} regenerates the whole model.}
+\end{table}
+
+\end{document}
